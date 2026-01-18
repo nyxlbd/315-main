@@ -195,6 +195,19 @@ router.get('/products', auth, isSeller, async (req, res) => {
   }
 });
 
+// Delete a product
+router.delete('/products/:id', auth, isSeller, async (req, res) => {
+  try {
+    const product = await Product.findOneAndDelete({ _id: req.params.id, seller: req.userId });
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found or not authorized' });
+    }
+    res.json({ message: 'Product deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
 // Get seller's orders
 router.get('/orders', auth, isSeller, async (req, res) => {
   try {

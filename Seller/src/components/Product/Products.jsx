@@ -45,14 +45,16 @@ const Products = () => {
   };
 
   const handleDelete = async (productId) => {
-    if (!window.confirm('Are you sure you want to delete this product?')) {
-      return;
-    }
-
+    if (!window.confirm('⚠️ Are you sure you want to delete this product? This action cannot be undone.')) return;
     try {
-      await productsAPI.delete(productId);
-      fetchData();
+      await sellerAPI.deleteProduct(productId);
+      // Remove the product from local state immediately
+      setProducts(prevProducts => prevProducts.filter(p => p._id !== productId));
+      alert('🗑️ Product deleted successfully!');
+      // Refresh to get updated counts
+      await fetchData();
     } catch (err) {
+      console.error('Delete error:', err);
       alert(err.response?.data?.message || 'Failed to delete product');
     }
   };

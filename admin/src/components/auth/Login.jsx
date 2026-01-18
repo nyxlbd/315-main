@@ -1,7 +1,7 @@
 ﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { Mail, Lock, ShoppingBag } from 'lucide-react';
+import logo from '../../assets/logo.png';
 import './Login.css';
 
 const Login = () => {
@@ -54,7 +54,7 @@ const Login = () => {
         <div className="login-branding">
           <div className="login-logo-container">
             <div className="login-logo">
-              <ShoppingBag size={80} strokeWidth={1.5} />
+              <img src={logo} alt="Pine City Made Logo" style={{ width: 320, height: 320 }} />
             </div>  
             <h1 className="login-brand-title">Pine City Made</h1>
             <p className="login-brand-subtitle">Empowering Local Artisans of Baguio City</p>
@@ -116,8 +116,8 @@ const Login = () => {
 
             <div className="login-footer">
               <h3>Test Credentials</h3>
-              <p>Email: admin@artisanmarket.com</p>
-              <p>Password: Admin123456</p>
+              <p>Email: admin@pinecitymade.com</p>
+              <p>Password: admin123</p>
             </div>
           </form>
         </div>

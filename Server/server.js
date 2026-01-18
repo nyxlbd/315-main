@@ -50,6 +50,7 @@ const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI, {
       serverApi: {
+        dbName: 'pinecitymade',
         version: '1',
         strict: true,
         deprecationErrors: true,

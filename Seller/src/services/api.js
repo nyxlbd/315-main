@@ -28,12 +28,13 @@ export const sellerAPI = {
   getProducts: (filters) => api.get('/seller/products', { params: filters }),
   getOrders: (filters) => api.get('/seller/orders', { params: filters }),
   getReviews: (filters) => api.get('/seller/reviews', { params: filters }),
-  getConversations: () => api.get('/seller/conversations'),
+  getConversations: () => api.get('messages/conversations'),
   getMessages: (conversationId) => api.get(`/seller/conversations/${conversationId}/messages`),
   sendMessage: (conversationId, data) => api.post(`/seller/conversations/${conversationId}/messages`, data),
   updateOrderStatus: (orderId, status) => api.patch(`/seller/orders/${orderId}/status`, { status }),
   replyToReview: (reviewId, data) => api.post(`/seller/reviews/${reviewId}/reply`, data),
   updateProfile: (data) => api.put('/seller/profile', data),
+  deleteProduct: (id) => api.delete(`/seller/products/${id}`),
 };
 
 export const productsAPI = {
@@ -65,9 +66,9 @@ export const productsAPI = {
         },
       });
     }
-    return api.put(`/products/${id}`, data);
+    return api.put(`products/${id}`, data);
   },
-  delete: (id) => api.delete(`/products/${id}`),
+  delete: (id) => api.delete(`products/${id}`),
 };
 
 export const categoriesAPI = {
