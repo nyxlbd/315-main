@@ -1,0 +1,48 @@
+/* ProductDetail page styles */
+
+.product-detail-flex {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.product-detail-image {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.product-detail-main {
+  flex: 1;
+}
+
+.product-detail-price {
+  font-size: 1.3rem;
+  color: #4b7c54;
+  font-weight: bold;
+}
+
+.product-detail-description {
+  margin: 1rem 0;
+}
+
+.product-detail-variation {
+  margin-bottom: 1rem;
+}
+
+.product-detail-review-box {
+  background: #f6fff6;
+  border: 1px solid #b6e2b6;
+  border-radius: 6px;
+  padding: 8px;
+  margin-top: 4px;
+}
+
+.product-detail-review-reply {
+  margin-top: 6px;
+  padding: 8px;
+  background: #f6fff6;
+  border: 1px solid #b6e2b6;
+  border-radius: 6px;
+}

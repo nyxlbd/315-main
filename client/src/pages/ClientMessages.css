@@ -1,0 +1,38 @@
+/* ClientMessages page styles */
+
+.client-messages-container {
+  /* container styles */
+}
+
+.client-messages-flex {
+  display: flex;
+  gap: 32px;
+}
+
+.client-messages-sidebar {
+  min-width: 220px;
+}
+
+.client-messages-list {
+  list-style: none;
+  padding: 0;
+}
+
+.client-messages-seller-btn {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  background: #309a37ff;
+  color: #fff;
+}
+.client-messages-seller-btn.selected {
+  background: #22c222ff;
+  color: #fff;
+}
+
+.client-messages-main {
+  flex: 1;
+}

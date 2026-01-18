@@ -1,0 +1,41 @@
+/* Dashboard page styles */
+
+.dashboard-form {
+  max-width: 500px;
+  margin-bottom: 2rem;
+}
+
+.dashboard-form-group {
+  margin-bottom: 1rem;
+}
+
+.dashboard-form-input,
+.dashboard-form-select {
+  width: 100%;
+}
+
+.dashboard-form-btn {
+  background: #4b7c54;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.dashboard-message {
+  margin-bottom: 1rem;
+  color: green;
+}
+
+.dashboard-products-list {
+  margin-top: 2rem;
+}
+
+.dashboard-product-item {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  padding: 16px;
+}

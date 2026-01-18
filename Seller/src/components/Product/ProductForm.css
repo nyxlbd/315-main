@@ -1,0 +1,503 @@
+.product-form-container {
+  padding: 1.5rem;
+}
+
+.form-header {
+  margin-bottom: 1.5rem;
+}
+
+.form-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #111827;
+  background: linear-gradient(90deg, #538E5E 0%, #406e49 100%);
+  border: none;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  box-shadow: 0 2px 8px 0 rgba(83, 142, 94, 0.08);
+  width: auto;
+  min-width: 0;
+  max-width: 220px;
+}
+
+.form-back-button:hover {
+  background: linear-gradient(90deg, #406e49 0%, #538E5E 100%);
+  color: #fff;
+}
+
+.form-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.product-form-card {
+  background-color: white;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  border: 1px solid #f3f4f6;
+}
+
+.product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-section {
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 1.5rem;
+}
+
+.form-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 1rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.form-section .form-row {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 1rem !important;
+}
+
+.form-group {
+  width: 100%;
+}
+
+.form-section .form-group {
+  width: 100% !important;
+  margin-bottom: 0 !important;
+}
+
+@media (max-width: 900px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-row-full {
+  grid-column: 1 / -1;
+}
+
+.image-upload-area {
+  border: 2px dashed #d1d5db;
+  border-radius: 0.5rem;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.image-upload-area:hover {
+  border-color: #538E5E;
+  background-color: #eff6ff;
+}
+
+.upload-icon {
+  margin: 0 auto 1rem;
+  color: #9ca3af;
+}
+
+.upload-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.upload-hint {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin-top: 0.5rem;
+}
+
+.hidden {
+  display: none;
+}
+
+.image-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.image-preview-item {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.remove-image-btn {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  padding: 0.25rem;
+  background-color: rgba(220, 38, 38, 0.9);
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.remove-image-btn:hover {
+  background-color: #991b1b;
+}
+
+.size-stock-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.size-stock-item {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+.size-stock-item .form-group {
+  flex: 1;
+}
+
+.btn-remove-size {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 1rem;
+  background: linear-gradient(90deg, #538E5E 0%, #406e49 100%);
+  color: #fff;
+  border: none;
+  border-radius: 2rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+  box-shadow: 0 2px 8px 0 rgba(83, 142, 94, 0.10);
+  margin: 1rem auto 0 auto;
+  min-width: 120px;
+  max-width: 180px;
+  justify-content: center;
+  letter-spacing: 0.01em;
+}
+
+.btn-remove-size:hover {
+  background-color: #fee2e2;
+}
+
+/* Enhance Add Size and Add Variation buttons */
+.btn-add-size,
+.btn-add-variation {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 1rem;
+  background: linear-gradient(90deg, #538E5E 0%, #406e49 100%);
+  color: #fff;
+  border: none;
+  border-radius: 2rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+  box-shadow: 0 2px 8px 0 rgba(83, 142, 94, 0.10);
+  margin: 1rem auto 0 auto;
+  min-width: 120px;
+  max-width: 180px;
+  justify-content: center;
+  letter-spacing: 0.01em;
+}
+
+.btn-add-size:hover,
+.btn-add-variation:hover {
+  background: linear-gradient(90deg, #406e49 0%, #538E5E 100%);
+  color: #fff;
+  box-shadow: 0 4px 16px 0 rgba(83, 142, 94, 0.15);
+  transform: translateY(-2px) scale(1.04);
+}
+
+/* Enhance the variation header bar */
+.variation-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  background: linear-gradient(90deg, #f1f4f2 0%, #ffffff 100%);
+  color: #000000;
+  border-radius: 0.5rem;
+  padding: 0.4rem 1.2rem;
+  font-weight: 500;
+  font-size: 1rem;
+  box-shadow: 0 1px 4px 0 rgba(83, 142, 94, 0.08);
+}
+
+.variation-title {
+  color: #000000;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-right: auto; /* Pushes remove button to the right */
+}
+
+.btn-remove-variation {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  padding: 0.35rem 1rem;
+  background: linear-gradient(90deg, #538E5E 0%, #406e49 100%);
+  color: #fff;
+  border: none;
+  border-radius: 2rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+  box-shadow: 0 2px 8px 0 rgba(83, 142, 94, 0.10);
+  margin: 0.5rem;
+  min-width: 120px;
+  max-width: 180px;
+  justify-content: center;
+  letter-spacing: 0.01em;
+  margin-left: auto;
+}
+
+.btn-remove-variation:hover {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* Add spacing and subtle shadow to variation items */
+.variation-item {
+  padding: 1.25rem 1rem 1.5rem 1rem;
+  background-color: #f9fafb;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 4px 0 rgba(83, 142, 94, 0.06);
+  margin-bottom: 1.25rem;
+}
+
+/* Add spacing between fields */
+.variation-fields {
+  display: grid;
+  grid-template-columns: 0.8fr 0.8fr 0.5fr;
+  gap: 1rem;
+  margin-top: 1rem;
+  width: 98%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 1200px) {
+  .variation-fields {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .variation-fields {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.form-checkbox {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 0.25rem;
+  border: 1px solid #d1d5db;
+  cursor: pointer;
+}
+
+.form-checkbox:checked {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+.checkbox-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.btn-cancel {
+  padding: 0.75rem 1.5rem;
+  background-color: white;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-cancel:hover {
+  background-color: #f9fafb;
+}
+
+.btn-submit {
+  padding: 0.75rem 1.5rem;
+  background-color: #538E5E;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-submit:hover {
+  background-color: #406e49;
+}
+
+.btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.filter-input:focus,
+.filter-select:focus {
+  outline: none;
+  border-color: #538E5E;
+  box-shadow: 0 0 0 3px rgba(83, 142, 94, 0.1);
+}
+
+/* Ensure all form inputs are visible and consistent */
+.form-input,
+.form-select,
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="password"] {
+  color: #111827;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.form-input:focus,
+.form-select:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+  outline: none;
+  border-color: #538E5E;
+  box-shadow: 0 0 0 3px rgba(83, 142, 94, 0.1);
+}
+
+/* Fixed size for product description textarea */
+.form-textarea {
+  min-height: 120px;
+  max-height: 240px;
+  height: 160px;
+  resize: vertical;
+  width: 100%;
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid #d1d5db;
+  color: #111827;
+  background: #fff;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-textarea:focus {
+  outline: none;
+  border-color: #538E5E;
+  box-shadow: 0 0 0 3px rgba(83, 142, 94, 0.1);
+}
+
+/* Ensure all variation fields and their inputs are consistent and visible */
+.variation-fields input,
+.variation-fields select,
+.variation-fields textarea,
+.variation-fields .form-input,
+.variation-fields .form-select {
+  color: #111827;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.variation-fields input:focus,
+.variation-fields select:focus,
+.variation-fields textarea:focus,
+.variation-fields .form-input:focus,
+.variation-fields .form-select:focus {
+  outline: none;
+  border-color: #538E5E;
+  box-shadow: 0 0 0 3px rgba(83, 142, 94, 0.1);
+}
+
+/* Make all form labels visible and consistent */
+.form-label,
+.form-group label,
+label {
+  color: #111827 !important;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.4rem;
+  display: block;
+  letter-spacing: 0.01em;
+}
+
+.input-label {
+  color: #111827;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  display: block;
+  letter-spacing: 0.01em;
+}

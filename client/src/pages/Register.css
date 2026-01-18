@@ -1,0 +1,25 @@
+/* Register page styles */
+
+.register-form {
+  max-width: 400px;
+}
+
+.register-form-group {
+  margin-bottom: 1rem;
+}
+
+.register-form-input {
+  width: 100%;
+}
+
+.register-form-message {
+  margin-top: 1rem;
+}
+
+.register-form-message.success {
+  color: green;
+}
+
+.register-form-message.error {
+  color: red;
+}

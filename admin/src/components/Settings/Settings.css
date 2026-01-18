@@ -1,0 +1,242 @@
+﻿.settings-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.settings-header {
+  margin-bottom: 2rem;
+}
+
+.settings-form {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  box-shadow: 0 1px 3px 0 rgba(83, 142, 94, 0.1);
+  border: 1px solid #d4e4d6;
+}
+
+.settings-section {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #e8f5ea;
+}
+
+.settings-section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e3a20;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.01em;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  font-weight: 500;
+  color: #2d5016;
+  transition: color 0.2s;
+}
+
+.checkbox-label:hover {
+  color: #1e3a20;
+}
+
+.checkbox-input {
+  width: 1.25rem;
+  height: 1.25rem;
+  cursor: pointer;
+  accent-color: #538E5E;
+  border: 2px solid #a8c9ac;
+  border-radius: 0.25rem;
+}
+
+.checkbox-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(83, 142, 94, 0.1);
+}
+
+.form-help {
+  margin-top: 0.5rem;
+  margin-left: 2rem;
+  font-size: 0.875rem;
+  color: #6b8e70;
+  line-height: 1.5;
+}
+
+.settings-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e8f5ea;
+}
+
+/* Additional form elements styling */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #2d5016;
+  font-size: 0.875rem;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #d4e4d6;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+  background-color: white;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: #538E5E;
+  box-shadow: 0 0 0 3px rgba(83, 142, 94, 0.1);
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: #a8c9ac;
+}
+
+/* Settings specific card styling */
+.settings-card {
+  background: #f5faf6;
+  border: 1px solid #d4e4d6;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.settings-card-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1e3a20;
+  margin-bottom: 0.5rem;
+}
+
+.settings-card-content {
+  font-size: 0.813rem;
+  color: #6b8e70;
+  line-height: 1.6;
+}
+
+/* Toggle switch styling */
+.toggle-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: #f5faf6;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #e8f5ea;
+  transition: all 0.2s;
+}
+
+.toggle-wrapper:hover {
+  border-color: #d4e4d6;
+  background: white;
+}
+
+.toggle-info {
+  flex: 1;
+}
+
+.toggle-title {
+  font-weight: 500;
+  color: #1e3a20;
+  margin-bottom: 0.25rem;
+  font-size: 0.938rem;
+}
+
+.toggle-description {
+  font-size: 0.813rem;
+  color: #6b8e70;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 3rem;
+  height: 1.5rem;
+  background: #d4e4d6;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.toggle-switch.active {
+  background: linear-gradient(135deg, #6fa876 0%, #538E5E 100%);
+}
+
+.toggle-slider {
+  position: absolute;
+  top: 0.125rem;
+  left: 0.125rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-switch.active .toggle-slider {
+  transform: translateX(1.5rem);
+}
+
+/* Success message */
+.success-message {
+  background: #d4f4dd;
+  color: #2d5016;
+  padding: 1rem 1.25rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #538E5E;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.success-message svg {
+  color: #538E5E;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+@media (max-width: 768px) {
+  .settings-form {
+    padding: 1.5rem;
+  }
+
+  .settings-actions {
+    flex-direction: column-reverse;
+  }
+
+  .settings-actions .btn {
+    width: 100%;
+  }
+}

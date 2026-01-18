@@ -1,0 +1,30 @@
+/* Products page styles */
+
+.products-filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.products-filter-btn {
+  background: #eee;
+  color: #222;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+}
+.products-filter-btn.active {
+  background: #4b7c54;
+  color: #fff;
+}
+
+.products-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.products-card-link {
+  cursor: pointer;
+}

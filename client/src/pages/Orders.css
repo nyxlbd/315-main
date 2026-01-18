@@ -1,0 +1,46 @@
+/* Orders page styles */
+
+.orders-refresh-btn {
+  margin-bottom: 16px;
+  background: #4b7c54;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+}
+
+.orders-error {
+  color: red;
+}
+
+.orders-list {
+  margin-top: 16px;
+}
+
+.orders-order {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  padding: 16px;
+}
+
+.orders-items-list {
+  margin-top: 8px;
+}
+
+.orders-review-box {
+  background: #f6fff6;
+  border: 1px solid #b6e2b6;
+  border-radius: 6px;
+  padding: 8px;
+  margin-top: 4px;
+}
+
+.orders-review-reply {
+  margin-top: 6px;
+  padding: 8px;
+  background: #f6fff6;
+  border: 1px solid #b6e2b6;
+  border-radius: 6px;
+}

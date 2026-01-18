@@ -1,0 +1,119 @@
+.navbar {
+  background-color: white;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1rem 1.5rem;
+}
+
+.navbar-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.navbar-badge {
+  margin-left: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  background-color: #eaf3ec;
+  color: #538E5E;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 9999px;
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.navbar-notification {
+  position: relative;
+  padding: 0.5rem;
+  color: #4b5563;
+  background-color: transparent;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.navbar-notification:hover {
+  background-color: #f3f4f6;
+}
+
+.notification-badge {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: #ef4444;
+  border-radius: 9999px;
+}
+
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-left: 1rem;
+  border-left: 1px solid #e5e7eb;
+}
+
+.navbar-user-info {
+  text-align: right;
+}
+
+.navbar-user-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #111827;
+}
+
+.navbar-user-email {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.navbar-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: #538E5E;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar-logout {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  color: #374151;
+  background-color: transparent;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.navbar-logout:hover {
+  background-color: #f3f4f6;
+}
+
+.navbar-logout-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+}

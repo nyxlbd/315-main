@@ -1,0 +1,63 @@
+﻿// Add these routes to your admin.js file after the products route
+
+// Approve product
+router.patch('/products/:id/approve', auth, isAdmin, async (req, res) => {
+  try {
+    const product = await Product.findByIdAndUpdate(
+      req.params.id,
+      { 
+        status: 'approved',
+        approvedAt: new Date(),
+        approvedBy: req.user.userId
+      },
+      { new: true }
+    ).populate('seller', 'username shopName email');
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    res.json({ 
+      message: 'Product approved successfully',
+      product 
+    });
+  } catch (error) {
+    console.error('Error approving product:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+// Reject product
+router.patch('/products/:id/reject', auth, isAdmin, async (req, res) => {
+  try {
+    const { reason } = req.body;
+    
+    if (!reason) {
+      return res.status(400).json({ message: 'Rejection reason is required' });
+    }
+
+    const product = await Product.findByIdAndUpdate(
+      req.params.id,
+      { 
+        status: 'rejected',
+        rejectionReason: reason,
+        rejectedAt: new Date(),
+        rejectedBy: req.user.userId
+      },
+      { new: true }
+    ).populate('seller', 'username shopName email');
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    res.json({ 
+      message: 'Product rejected successfully',
+      product 
+    });
+  } catch (error) {
+    console.error('Error rejecting product:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+

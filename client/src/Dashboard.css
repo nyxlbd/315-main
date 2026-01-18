@@ -1,0 +1,56 @@
+.dashboard-insights {
+  margin-bottom: 2rem;
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.dashboard-insight-cards {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+.dashboard-insight-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  padding: 1rem 1.5rem;
+  min-width: 180px;
+  text-align: center;
+  flex: 1;
+}
+.dashboard-insight-title {
+  font-size: 1rem;
+  color: #888;
+  margin-bottom: 0.5rem;
+}
+.dashboard-insight-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #3498db;
+}
+.dashboard-monthly-sales {
+  margin-top: 2rem;
+}
+.dashboard-sales-chart {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  padding: 1rem;
+  margin-top: 0.5rem;
+  overflow-x: auto;
+}
+.dashboard-sales-chart table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.dashboard-sales-chart th, .dashboard-sales-chart td {
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+.dashboard-sales-chart th {
+  background: #f0f4f8;
+  color: #555;
+}

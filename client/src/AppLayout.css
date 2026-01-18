@@ -1,0 +1,15 @@
+.main-content {
+  margin-left: 220px;
+  margin-top: 64px; /* Adjust if your navbar is taller/shorter */
+  min-height: calc(100vh - 64px);
+  background: #fafafa;
+  box-sizing: border-box;
+  padding: 2rem 2rem 2rem 2rem;
+}
+
+@media (max-width: 900px) {
+  .main-content {
+    margin-left: 0;
+    padding: 1rem;
+  }
+}
