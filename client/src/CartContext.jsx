@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import API from './services/api';
 import { isAuthenticated, getCurrentUser } from './auth';
 
@@ -9,6 +10,7 @@ export function useCart() {
 }
 
 export function CartProvider({ children }) {
+  const navigate = typeof window !== 'undefined' && window.location ? null : useNavigate();
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -43,7 +45,7 @@ export function CartProvider({ children }) {
   const syncCart = async (newCart) => {
     if (isAuthenticated()) {
       try {
-        const items = newCart.map(({ product, quantity, size, variationName }) => {
+        const items = newCart.map(({ product, quantity, size }) => {
           // Ensure product has _id or id
           if (!product) {
             console.error('Invalid product in cart: product is null/undefined', product);
@@ -61,8 +63,7 @@ export function CartProvider({ children }) {
           return {
             product: productId,
             quantity,
-            size: size === null || size === undefined ? '' : size,
-            variationName: variationName === null || variationName === undefined ? '' : variationName,
+            size: size === null || size === undefined ? '' : size
           };
         }).filter(item => item !== null); // Remove invalid items
         
@@ -83,6 +84,14 @@ export function CartProvider({ children }) {
 
   // Add to cart: support size/variation
   const addToCart = (product, quantity = 1, size = null, variationName = null) => {
+    if (!isAuthenticated()) {
+      if (typeof window !== 'undefined' && window.location) {
+        window.location.href = '/login';
+      } else if (navigate) {
+        navigate('/login');
+      }
+      return;
+    }
     // Validate product - support both _id (MongoDB) and id
     if (!product) {
       console.error('Cannot add to cart: product is null/undefined', product);
@@ -154,13 +163,17 @@ export function CartProvider({ children }) {
     });
   };
 
-  const clearCart = () => {
-    setCart([]);
+  const clearCart = async () => {
     if (isAuthenticated()) {
-      API.delete('/cart');
+      try {
+        await API.delete('/cart');
+      } catch (err) {
+        console.error('Failed to clear cart on server:', err);
+      }
     } else {
       localStorage.removeItem('cart');
     }
+    setCart([]);
   };
 
   return (

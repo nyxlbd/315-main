@@ -18,7 +18,15 @@ api.interceptors.request.use((config) => {
 });
 
 export const authAPI = {
-  login: (credentials) => api.post('/auth/login', { ...credentials, role: 'seller' }),
+  login: async (credentials) => {
+    // Only send email and password for login
+    const { email, password } = credentials;
+    const res = await api.post('/auth/login', { email, password });
+    if (res.data && res.data.user && res.data.user._id) {
+      localStorage.setItem('userId', res.data.user._id);
+    }
+    return res;
+  },
   register: (userData) => api.post('/auth/register', { ...userData, role: 'seller' }),
   getProfile: () => api.get('/auth/me'),
 };
@@ -29,10 +37,10 @@ export const sellerAPI = {
   getOrders: (filters) => api.get('/seller/orders', { params: filters }),
   getReviews: (filters) => api.get('/seller/reviews', { params: filters }),
   getConversations: () => api.get('messages/conversations'),
-  getMessages: (conversationId) => api.get(`/seller/conversations/${conversationId}/messages`),
-  sendMessage: (conversationId, data) => api.post(`/seller/conversations/${conversationId}/messages`, data),
-  updateOrderStatus: (orderId, status) => api.patch(`/seller/orders/${orderId}/status`, { status }),
-  replyToReview: (reviewId, data) => api.post(`/seller/reviews/${reviewId}/reply`, data),
+  getMessages: (userId) => api.get(`/messages/conversation/${userId}`),
+  sendMessage: (data) => api.post('/messages/send', data),
+  updateOrderStatus: (orderId, status) => api.put(`/orders/${orderId}/status`, { status }),
+  replyToReview: (reviewId, data) => api.post(`/reviews/${reviewId}/reply`, data),
   updateProfile: (data) => api.put('/seller/profile', data),
   deleteProduct: (id) => api.delete(`/seller/products/${id}`),
 };

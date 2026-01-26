@@ -25,22 +25,25 @@ router.post('/', auth, isClient, async (req, res) => {
 
     // Check if order exists and is delivered
     const order = await Order.findById(orderId);
-    
     if (!order) {
+      console.error('Review error: Order not found', { orderId });
       return res.status(404).json({ message: 'Order not found' });
     }
 
     if (order.user.toString() !== req.userId.toString()) {
+      console.error('Review error: Not authorized', { user: req.userId, orderUser: order.user });
       return res.status(403).json({ message: 'Not authorized' });
     }
 
     if (order.status !== 'delivered') {
+      console.error('Review error: Order not delivered', { orderId, status: order.status });
       return res.status(400).json({ message: 'Can only review delivered orders' });
     }
 
-    // Check if product is in the order
-    const orderItem = order.items.find(item => item.product.toString() === productId);
+    // Check if product is in the order (robust ObjectId comparison)
+    const orderItem = order.items.find(item => item.product.toString() === productId.toString());
     if (!orderItem) {
+      console.error('Review error: Product not in this order', { productId, orderItems: order.items.map(i => i.product.toString()) });
       return res.status(400).json({ message: 'Product not in this order' });
     }
 
@@ -50,8 +53,8 @@ router.post('/', auth, isClient, async (req, res) => {
       user: req.userId, 
       order: orderId 
     });
-
     if (existingReview) {
+      console.error('Review error: Already reviewed', { productId, orderId, user: req.userId });
       return res.status(400).json({ message: 'You have already reviewed this product' });
     }
 
@@ -78,6 +81,7 @@ router.post('/', auth, isClient, async (req, res) => {
       review 
     });
   } catch (error) {
+    console.error('Review error: Exception', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });

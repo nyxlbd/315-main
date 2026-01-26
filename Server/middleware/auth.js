@@ -30,9 +30,9 @@ const auth = async (req, res, next) => {
   }
 };
 
-// Check if user is a client
+// Check if user is a client (customer)
 const isClient = (req, res, next) => {
-  if (req.userRole === 'client' || req.userRole === 'admin') {
+  if (req.userRole === 'customer' || req.userRole === 'admin') {
     next();
   } else {
     res.status(403).json({ message: 'Client access required' });

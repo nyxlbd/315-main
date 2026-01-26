@@ -3,8 +3,7 @@ const mongoose = require('mongoose');
 const sizeStockSchema = new mongoose.Schema({
   size: {
     type: String,
-    required: true,
-    enum: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'One Size']
+    required: true
   },
   quantity: {
     type: Number,

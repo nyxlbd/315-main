@@ -27,7 +27,8 @@ function Orders() {
           try {
             const rres = await API.get(`/reviews/product/${item.product._id}`);
             // Find review for this order and product by this client
-            const review = rres.data.find(r => r.order === order._id);
+            const reviewArr = rres.data.reviews || [];
+            const review = reviewArr.find(r => r.order === order._id);
             if (review) {
               if (!reviewMap[order._id]) reviewMap[order._id] = {};
               reviewMap[order._id][item.product._id] = review;
@@ -94,9 +95,24 @@ function Orders() {
                                 orderId={order._id}
                                 productId={item.product._id}
                                 onSubmit={async (data) => {
-                                  await API.post('/reviews', data);
+                                  // Patch: send orderId and productId fields as required by backend
+                                  const res = await API.post('/reviews', {
+                                    orderId: data.orderId || data.order || order._id,
+                                    productId: data.productId || data.product || item.product._id,
+                                    rating: data.rating,
+                                    comment: data.comment
+                                  });
                                   setShowReviewForm(f => ({ ...f, [`${order._id}_${item.product._id}`]: false }));
-                                  fetchOrders();
+                                  // Immediately update reviews state so UI shows the review
+                                  setReviews(prev => ({
+                                    ...prev,
+                                    [order._id]: {
+                                      ...(prev[order._id] || {}),
+                                      [item.product._id]: res.data.review
+                                    }
+                                  }));
+                                  // Optionally, you can still call fetchOrders() if you want to refresh everything
+                                  // fetchOrders();
                                 }}
                                 onCancel={() => setShowReviewForm(f => ({ ...f, [`${order._id}_${item.product._id}`]: false }))}
                               />
@@ -113,18 +129,18 @@ function Orders() {
                   ))}
                 </ul>
               </div>
-              {order.status === 'in transit' && (
+              {order.status === 'out for delivery' && (
                 <button
                   style={{ marginTop: 12, background: '#4b7c54', color: '#fff', border: 'none', borderRadius: 6, padding: '0.4rem 1rem', cursor: 'pointer' }}
                   onClick={async () => {
                     try {
-                      await API.patch(`/orders/${order._id}/mark-delivered`);
+                      await API.put(`/orders/${order._id}/status`, { status: 'delivered' });
                       fetchOrders();
                     } catch (err) {
-                      alert('Failed to mark as delivered.');
+                      alert('Failed to mark as received.');
                     }
                   }}
-                >Mark as Delivered</button>
+                >Mark as Received</button>
               )}
             </div>
           ))}

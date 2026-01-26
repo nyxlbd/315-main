@@ -105,7 +105,7 @@ const Dashboard = () => {
     <div className="dashboard">
       <div className="dashboard-header">
         <h1 className="dashboard-title">Dashboard Overview</h1>
-        <p className="dashboard-subtitle">Welcome to Artisan Market Admin Panel</p>
+        <p className="dashboard-subtitle">Welcome to PMC Admin Panel</p>
       </div>
 
       {/* Stats Grid */}

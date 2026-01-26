@@ -23,7 +23,6 @@ const ProductForm = () => {
     category: '',
     images: [],
     sizeStock: [{ size: '', quantity: '' }],
-    variations: [],
     isFeatured: false,
     isFlashSale: false,
   });
@@ -66,7 +65,6 @@ const ProductForm = () => {
         category: product.category._id,
         images: [...existing, ...blobUrls], // Show existing + any blob URLs (will be replaced)
         sizeStock: product.sizeStock.length > 0 ? product.sizeStock : [{ size: '', quantity: '' }],
-        variations: product.variations || [],
         isFeatured: product.isFeatured,
         isFlashSale: product.isFlashSale,
       });
@@ -156,25 +154,7 @@ const ProductForm = () => {
     });
   };
 
-  const handleVariationChange = (index, field, value) => {
-    const newVariations = [...formData.variations];
-    newVariations[index][field] = value;
-    setFormData({ ...formData, variations: newVariations });
-  };
 
-  const addVariation = () => {
-    setFormData({
-      ...formData,
-      variations: [...formData.variations, { name: '', value: '', priceAdjustment: 0 }],
-    });
-  };
-
-  const removeVariation = (index) => {
-    setFormData({
-      ...formData,
-      variations: formData.variations.filter((_, i) => i !== index),
-    });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -214,8 +194,7 @@ const ProductForm = () => {
       // Add sizeStock as JSON string
       formDataToSend.append('sizeStock', JSON.stringify(formData.sizeStock));
       
-      // Add variations as JSON string
-      formDataToSend.append('variations', JSON.stringify(formData.variations));
+
 
       if (isEditMode) {
         await productsAPI.update(id, formDataToSend);
@@ -436,63 +415,7 @@ const ProductForm = () => {
             </button>
           </div>
 
-          <div className="form-section">
-            <h2 className="section-title">Variations (Optional)</h2>
-            {formData.variations.length > 0 && (
-              <div className="variation-list">
-                {formData.variations.map((variation, index) => (
-                  <div key={index} className="variation-item">
-                    <div className="variation-header">
-                      <span className="variation-title">Variation {index + 1}</span>
-                      <button
-                        type="button"
-                        onClick={() => removeVariation(index)}
-                        className="btn-remove-variation"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                    <div className="variation-fields">
-                      <div className="form-group">
-                        <label className="form-label">Name</label>
-                        <input
-                          type="text"
-                          value={variation.name}
-                          onChange={(e) => handleVariationChange(index, 'name', e.target.value)}
-                          className="form-input"
-                          placeholder="e.g., Color, Material"
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label className="form-label">Value</label>
-                        <input
-                          type="text"
-                          value={variation.value}
-                          onChange={(e) => handleVariationChange(index, 'value', e.target.value)}
-                          className="form-input"
-                          placeholder="e.g., Red, Blue"
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label className="form-label">Price +/-</label>
-                        <input
-                          type="number"
-                          value={variation.priceAdjustment}
-                          onChange={(e) => handleVariationChange(index, 'priceAdjustment', e.target.value)}
-                          className="form-input"
-                          placeholder="0"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-            <button type="button" onClick={addVariation} className="btn-add-size">
-              <Plus className="w-4 h-4" />
-              Add Variation
-            </button>
-          </div>
+
 
           <div className="form-section">
             <h2 className="section-title">Additional Settings</h2>

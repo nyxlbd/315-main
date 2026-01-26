@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../CartContext';
+// import { isAuthenticated } from '../auth';
 import { isAuthenticated } from '../auth';
 import API from '../services/api';
 import CategorySelector from '../components/CategorySelector';
@@ -85,6 +86,10 @@ function Landing() {
   }, []);
 
   const handleAddToCart = (e, product) => {
+    if (!isAuthenticated()) {
+      navigate('/login');
+      return;
+    }
     // #region agent log
     fetch('http://127.0.0.1:7246/ingest/a4b118a0-b7d4-495b-8fd5-a719d2a4aeeb',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'Landing.jsx:87',message:'handleAddToCart entry',data:{hasProduct:!!product,hasEvent:!!e,productType:typeof product,productKeys:product?Object.keys(product):[]},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
     // #endregion

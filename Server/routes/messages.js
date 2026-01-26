@@ -41,13 +41,20 @@ router.get('/conversations', auth, async (req, res) => {
       }
     ]);
 
-    // Populate user details
-    await Message.populate(messages, {
-      path: 'lastMessage.sender lastMessage.receiver',
-      select: 'username avatar shopName role'
-    });
-
-    res.json({ conversations: messages });
+    // Populate user details for each lastMessage
+    const populated = await Promise.all(
+      messages.map(async (conv) => {
+        if (conv.lastMessage) {
+          await Message.populate(conv.lastMessage, [
+            { path: 'sender', select: 'username avatar shopName role' },
+            { path: 'receiver', select: 'username avatar shopName role' }
+          ]);
+        }
+        return conv;
+      })
+    );
+    console.log('DEBUG /messages/conversations result:', JSON.stringify(populated, null, 2));
+    res.json({ conversations: populated });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
@@ -75,7 +82,7 @@ router.get('/conversation/:userId', auth, async (req, res) => {
       { isRead: true }
     );
 
-    res.json({ messages });
+    res.json(messages);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }

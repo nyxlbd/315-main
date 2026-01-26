@@ -16,13 +16,14 @@ const Messages = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const messagesEndRef = useRef(null);
 
+
   useEffect(() => {
     fetchConversations();
   }, []);
 
   useEffect(() => {
-    if (selectedConversation) {
-      fetchMessages(selectedConversation._id);
+    if (selectedConversation && selectedConversation.customer) {
+      fetchMessages(selectedConversation.customer._id);
     }
   }, [selectedConversation]);
 
@@ -38,7 +39,21 @@ const Messages = () => {
     try {
       setLoading(true);
       const response = await sellerAPI.getConversations();
-      setConversations(response.data.conversations);
+      const sellerId = localStorage.getItem('userId');
+      // Add .customer property to each conversation
+      const mapped = (response.data.conversations || []).map(conv => {
+        let customer = null;
+        if (conv.lastMessage) {
+          // The customer is the user who is not the seller
+          if (conv.lastMessage.sender && conv.lastMessage.sender._id !== sellerId && conv.lastMessage.sender.role === 'customer') {
+            customer = conv.lastMessage.sender;
+          } else if (conv.lastMessage.receiver && conv.lastMessage.receiver._id !== sellerId && conv.lastMessage.receiver.role === 'customer') {
+            customer = conv.lastMessage.receiver;
+          }
+        }
+        return { ...conv, customer };
+      });
+      setConversations(mapped);
       setError(null);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to load conversations');
@@ -47,10 +62,10 @@ const Messages = () => {
     }
   };
 
-  const fetchMessages = async (conversationId) => {
+  const fetchMessages = async (userId) => {
     try {
-      const response = await sellerAPI.getMessages(conversationId);
-      setMessages(response.data.messages);
+      const response = await sellerAPI.getMessages(userId);
+      setMessages(response.data);
     } catch (err) {
       console.error('Failed to load messages:', err);
     }
@@ -61,11 +76,17 @@ const Messages = () => {
     if (!messageText.trim() || !selectedConversation) return;
 
     try {
-      await sellerAPI.sendMessage(selectedConversation._id, {
-        message: messageText,
-      });
+      // Use the .customer property for the correct receiverId
+      const customerId = selectedConversation.customer?._id;
+      if (!customerId) {
+        alert('No customer found for this conversation.');
+        return;
+      }
+      const payload = { receiverId: customerId, message: messageText };
+      console.log('DEBUG seller sendMessage payload:', payload);
+      await sellerAPI.sendMessage(payload);
       setMessageText('');
-      fetchMessages(selectedConversation._id);
+      fetchMessages(customerId);
       fetchConversations(); // Update last message
     } catch (err) {
       alert(err.response?.data?.message || 'Failed to send message');

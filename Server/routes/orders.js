@@ -2,7 +2,9 @@ const express = require('express');
 const Order = require('../models/Order');
 const Cart = require('../models/Cart');
 const Product = require('../models/Product');
+
 const { auth, isClient, isSeller } = require('../middleware/auth');
+const Message = require('../models/Message');
 
 const router = express.Router();
 
@@ -76,62 +78,72 @@ router.get('/:id', auth, async (req, res) => {
 
 // Create order (client)
 router.post('/', auth, isClient, async (req, res) => {
+
   try {
     const { items, shippingAddress, paymentMethod } = req.body;
+    // Debug: Log incoming order payload
+    console.log('ORDER DEBUG: Incoming order payload:', JSON.stringify(req.body, null, 2));
 
     if (!items || items.length === 0) {
+      console.error('ORDER DEBUG: No items in order');
       return res.status(400).json({ message: 'No items in order' });
     }
 
     // Validate stock availability and enrich items with seller
     for (const item of items) {
-      const product = await Product.findById(item.product);
-      
-      if (!product || !product.isAvailable) {
-        return res.status(400).json({ 
-          message: `Product ${item.name || product?.name || 'Unknown'} is not available` 
-        });
-      }
-
-      // Add seller to item if not already present
-      if (!item.seller) {
-        item.seller = product.seller;
-      }
-      
-      // Validate seller exists
-      if (!item.seller) {
-        return res.status(400).json({ 
-          message: `Product ${item.name || product.name} has no seller assigned` 
-        });
-      }
-
-      // Check size stock if applicable
-      if (item.size && product.sizeStock.length > 0) {
-        const sizeStock = product.sizeStock.find(s => s.size === item.size);
-        if (!sizeStock || sizeStock.quantity < item.quantity) {
+      try {
+        console.log('ORDER DEBUG: Processing item:', JSON.stringify(item, null, 2));
+        const product = await Product.findById(item.product);
+        if (!product || !product.isAvailable) {
+          console.error('ORDER DEBUG: Product not available:', item.product, product);
           return res.status(400).json({ 
-            message: `Insufficient stock for ${item.name || product.name} (Size: ${item.size})` 
+            message: `Product ${item.name || product?.name || 'Unknown'} is not available` 
           });
         }
-      } else {
-        // For products without size or without sizeStock, check totalStock
-        // But if product has sizeStock but item.size is empty, recalculate totalStock from sizeStock
-        let availableStock = product.totalStock;
-        if (product.sizeStock && product.sizeStock.length > 0 && !item.size) {
-          // Recalculate totalStock from sizeStock entries
-          availableStock = product.sizeStock.reduce((sum, s) => sum + s.quantity, 0);
+        // Add seller to item if not already present
+        if (!item.seller) {
+          item.seller = product.seller;
         }
-        if (availableStock < item.quantity) {
+        // Validate seller exists
+        if (!item.seller) {
+          console.error('ORDER DEBUG: No seller for product:', item.product, product);
           return res.status(400).json({ 
-            message: `Insufficient stock for ${item.name || product.name}` 
+            message: `Product ${item.name || product.name} has no seller assigned` 
           });
         }
+        // Check size stock if applicable
+        if (item.size && product.sizeStock.length > 0) {
+          const sizeStock = product.sizeStock.find(s => s.size === item.size);
+          if (!sizeStock || sizeStock.quantity < item.quantity) {
+            console.error('ORDER DEBUG: Insufficient stock for size:', { product: product._id, size: item.size, available: sizeStock ? sizeStock.quantity : 0, requested: item.quantity });
+            return res.status(400).json({ 
+              message: `Insufficient stock for ${item.name || product.name} (Size: ${item.size})` 
+            });
+          }
+        } else {
+          // For products without size or without sizeStock, check totalStock
+          // But if product has sizeStock but item.size is empty, recalculate totalStock from sizeStock
+          let availableStock = product.totalStock;
+          if (product.sizeStock && product.sizeStock.length > 0 && !item.size) {
+            // Recalculate totalStock from sizeStock entries
+            availableStock = product.sizeStock.reduce((sum, s) => sum + s.quantity, 0);
+          }
+          if (availableStock < item.quantity) {
+            console.error('ORDER DEBUG: Insufficient stock:', { product: product._id, availableStock, requested: item.quantity });
+            return res.status(400).json({ 
+              message: `Insufficient stock for ${item.name || product.name}` 
+            });
+          }
+        }
+      } catch (itemErr) {
+        console.error('ORDER DEBUG: Error processing item:', item, itemErr);
+        throw itemErr;
       }
     }
 
     const totalAmount = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-    // Transform items: convert variationName to variation object, handle empty size
+    // Transform items: handle empty size
     const transformedItems = items.map(item => {
       const transformed = {
         product: item.product,
@@ -139,16 +151,11 @@ router.post('/', auth, isClient, async (req, res) => {
         name: item.name,
         quantity: item.quantity,
         price: item.price,
-        ...(item.size && item.size.trim() ? { size: item.size } : {}),
-        ...(item.variationName && item.variationName.trim() ? { 
-          variation: { 
-            name: item.variationName,
-            value: item.variationName 
-          } 
-        } : {})
+        ...(item.size && item.size.trim() ? { size: item.size } : {})
       };
       return transformed;
     });
+    console.log('ORDER DEBUG: Transformed items:', JSON.stringify(transformedItems, null, 2));
 
     const order = new Order({
       user: req.userId,
@@ -163,46 +170,72 @@ router.post('/', auth, isClient, async (req, res) => {
       }]
     });
 
-    await order.save();
+
+    try {
+      await order.save();
+      console.log('ORDER DEBUG: Order saved successfully:', order._id);
+    } catch (saveErr) {
+      console.error('ORDER DEBUG: Error saving order:', saveErr);
+      return res.status(500).json({ message: 'Server error (order save)', error: saveErr.message });
+    }
+
+    // Automated message to customer after order placement
+    try {
+      // For each seller in the order, send a message to the customer
+      const uniqueSellers = [...new Set(transformedItems.map(item => item.seller.toString()))];
+      for (const sellerId of uniqueSellers) {
+        let conversationId;
+        if (typeof Message.getConversationId === 'function') {
+          conversationId = Message.getConversationId(req.userId, sellerId);
+        } else if (Message.schema && Message.schema.statics.getConversationId) {
+          conversationId = Message.schema.statics.getConversationId(req.userId, sellerId);
+        } else {
+          // fallback: just join the ids
+          conversationId = [req.userId, sellerId].sort().join('_');
+        }
+        try {
+          const autoMsg = await Message.create({
+            conversation: conversationId,
+            sender: sellerId, // Seller as sender (system message)
+            receiver: req.userId,
+            message: `Thank you for your order! Your order (${order.orderNumber}) has been placed and is being processed.`,
+          });
+          // Populate sender and receiver for frontend compatibility
+          await autoMsg.populate('sender', 'username shopName role');
+          await autoMsg.populate('receiver', 'username shopName role');
+          console.log('ORDER DEBUG: Automated message sent for seller:', sellerId);
+        } catch (msgCreateErr) {
+          console.error('ORDER DEBUG: Error creating automated message for seller', sellerId, msgCreateErr);
+        }
+      }
+    } catch (msgErr) {
+      // Log but do not block order creation
+      console.error('ORDER DEBUG: Failed to send automated order message:', msgErr);
+    }
 
     // Update product stock and sold count
     for (const item of items) {
-      const product = await Product.findById(item.product);
-      
-      if (item.size && product.sizeStock.length > 0) {
-        const sizeIndex = product.sizeStock.findIndex(s => s.size === item.size);
-        if (sizeIndex !== -1) {
-          product.sizeStock[sizeIndex].quantity -= item.quantity;
+      try {
+        const product = await Product.findById(item.product);
+        if (!product) {
+          console.error('ORDER DEBUG: Product not found during stock update:', item.product);
+          continue;
         }
+        if (item.size && product.sizeStock.length > 0) {
+          const sizeIndex = product.sizeStock.findIndex(s => s.size === item.size);
+          if (sizeIndex !== -1) {
+            product.sizeStock[sizeIndex].quantity -= item.quantity;
+          }
+        }
+        product.soldCount += item.quantity;
+        await product.save();
+        console.log('ORDER DEBUG: Updated stock and sold count for product:', product._id);
+      } catch (stockErr) {
+        console.error('ORDER DEBUG: Error updating stock for item:', item, stockErr);
       }
-      
-      product.soldCount += item.quantity;
-      await product.save();
     }
 
-    // Clear cart after successful order
-    await Cart.findOneAndUpdate(
-      { user: req.userId },
-      { items: [], updatedAt: Date.now() }
-    );
-
-    await order.populate('items.product', 'name images');
-    await order.populate('items.seller', 'username shopName');
-
-    // Transform shippingAddress to delivery for frontend compatibility
-    const orderObj = order.toObject();
-    if (orderObj.shippingAddress) {
-      orderObj.delivery = {
-        name: orderObj.shippingAddress.name || '',
-        address: orderObj.shippingAddress.street || '',
-        phone: orderObj.shippingAddress.phone || ''
-      };
-    }
-
-    res.status(201).json({ 
-      message: 'Order created successfully', 
-      order: orderObj
-    });
+    res.status(201).json({ message: 'Order placed successfully', order });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
@@ -218,18 +251,26 @@ router.put('/:id/status', auth, async (req, res) => {
       return res.status(404).json({ message: 'Order not found' });
     }
 
-    // Check if user is seller of this order or admin
+    // Check roles
     const isSeller = order.items.some(item => item.seller.toString() === req.userId.toString());
     const isAdmin = req.userRole === 'admin';
-
-    if (!isSeller && !isAdmin) {
-      return res.status(403).json({ message: 'Not authorized to update this order' });
-    }
+    const isOwner = order.user.toString() === req.userId.toString();
 
     // Validate status transition
     const validStatuses = ['order placed', 'processing', 'out for delivery', 'delivered', 'cancelled'];
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ message: 'Invalid status' });
+    }
+
+    // Only allow:
+    // - Seller or admin: any status
+    // - Client (order owner): only to 'delivered' and only if current status is 'out for delivery'
+    if (isSeller || isAdmin) {
+      // Allow any status change
+    } else if (isOwner && status === 'delivered' && order.status === 'out for delivery') {
+      // Allow client to mark as delivered
+    } else {
+      return res.status(403).json({ message: 'Not authorized to update this order' });
     }
 
     order.status = status;

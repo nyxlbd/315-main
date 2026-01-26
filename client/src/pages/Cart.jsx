@@ -24,7 +24,6 @@ function Cart() {
         name: item.product.name,
         quantity: item.quantity,
         size: item.size || '',
-        variationName: item.variationName || '',
         price: item.product.price,
         seller: item.product.seller?._id || item.product.seller
       }));

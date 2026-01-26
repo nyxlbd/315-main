@@ -5,6 +5,21 @@ const { auth, isClient } = require('../middleware/auth');
 
 const router = express.Router();
 
+// Clear cart for authenticated user
+router.delete('/', auth, isClient, async (req, res) => {
+  try {
+    const cart = await Cart.findOne({ user: req.userId });
+    if (cart) {
+      cart.items = [];
+      cart.updatedAt = Date.now();
+      await cart.save();
+    }
+    res.json({ message: 'Cart cleared' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
 // Sync entire cart
 router.post('/', auth, isClient, async (req, res) => {
   try {
@@ -31,28 +46,11 @@ router.post('/', auth, isClient, async (req, res) => {
       if (size && !['XS', 'S', 'M', 'L', 'XL', 'XXL', 'One Size'].includes(size)) {
         size = undefined; // Invalid size, ignore it
       }
-      
-      // Handle variation: convert variationName to variation object if provided
-      let variation = undefined;
-      if (item.variationName && item.variationName.trim()) {
-        // Find matching variation in product
-        const productVariation = product.variations?.find(v => v.name === item.variationName);
-        if (productVariation) {
-          variation = {
-            name: item.variationName,
-            value: productVariation.value || item.variationName,
-            priceAdjustment: productVariation.priceAdjustment || 0
-          };
-          itemPrice += (productVariation.priceAdjustment || 0);
-        }
-      }
-      
       processedItems.push({
         product: item.product,
         quantity: item.quantity,
         price: itemPrice,
-        ...(size && { size }),
-        ...(variation && { variation })
+        ...(size && { size })
       });
     }
     

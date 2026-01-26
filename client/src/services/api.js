@@ -17,4 +17,10 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Helper functions for authentication
+export const authAPI = {
+  login: (credentials) => api.post('/auth/login', credentials),
+  register: (userData) => api.post('/auth/register', userData),
+};
+
 export default api;

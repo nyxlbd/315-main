@@ -17,7 +17,7 @@ function Sidebar() {
   return (
     <aside className="sidebar">
       <ul className="sidebar-links">
-        {role === 'client' && (
+        {role === 'customer' && (
           <>
             <li><Link to="/products">Browse Products</Link></li>
             <li><Link to="/cart">Cart</Link></li>

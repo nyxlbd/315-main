@@ -14,9 +14,10 @@ function ProductDetail() {
   const { cart, addToCart } = useCart();
   const [added, setAdded] = useState(false);
   const [selectedVariation, setSelectedVariation] = useState(0);
+  const [selectedOption, setSelectedOption] = useState(0);
   const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
-  const [selections, setSelections] = useState([]); // {variationIdx, size, quantity}
+  const [selections, setSelections] = useState([]); // {variationIdx, optionIdx, size, quantity}
   const [reviews, setReviews] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(true);
   const user = getCurrentUser();
@@ -45,7 +46,7 @@ function ProductDetail() {
       setReviewsLoading(true);
       try {
         const res = await API.get(`/reviews/product/${id}`);
-        setReviews(Array.isArray(res.data) ? res.data : []);
+        setReviews(Array.isArray(res.data.reviews) ? res.data.reviews : []);
       } catch {
         setReviews([]);
       }
@@ -58,6 +59,7 @@ function ProductDetail() {
   useEffect(() => {
     if (product && product.variations && product.variations.length > 0) {
       setSelectedVariation(0);
+      setSelectedOption(0);
       const firstSizes = product.variations[0]?.options?.[0]?.sizes;
       if (firstSizes && firstSizes.length > 0) {
         setSelectedSize(firstSizes[0].size);
@@ -67,6 +69,7 @@ function ProductDetail() {
       setQuantity(1);
     } else {
       setSelectedVariation(0);
+      setSelectedOption(0);
       setSelectedSize('');
       setQuantity(1);
     }
@@ -110,136 +113,92 @@ function ProductDetail() {
           </div>
           <div className="product-detail-description">{product.description}</div>
           {/* Product options/variations/quantity/add to cart code START */}
-          {product.variations && product.variations.length > 0 ? (
+          {product.sizeStock && product.sizeStock.length > 0 ? (
             <>
-              <div className="product-detail-variation">
-                <strong>Variation:</strong>
+              <div style={{ marginBottom: '1rem' }}>
+                <strong>Size:</strong>
                 <select
-                  value={selectedVariation}
+                  value={selectedSize}
                   onChange={e => {
-                    setSelectedVariation(Number(e.target.value));
-                    const firstSizes = product.variations[Number(e.target.value)]?.options?.[0]?.sizes;
-                    setSelectedSize(firstSizes && firstSizes.length > 0 ? firstSizes[0].size : '');
+                    setSelectedSize(e.target.value);
                     setQuantity(1);
                   }}
                   style={{ marginLeft: 8 }}
                 >
-                  {product.variations.map((v, idx) => (
-                    <option key={v.name || idx} value={idx}>
-                      {v.name || v.variationName || `Variation ${idx + 1}`}
+                  {product.sizeStock.map((s, idx) => (
+                    <option key={`${s.size}-${idx}`} value={s.size} disabled={s.quantity === 0}>
+                      {s.size} ({s.quantity} available)
                     </option>
                   ))}
                 </select>
               </div>
-              {Array.isArray(product.variations[selectedVariation]?.options?.[0]?.sizes) &&
-              product.variations[selectedVariation].options[0].sizes.length > 0 ? (
-                <>
-                  <div style={{ marginBottom: '1rem' }}>
-                    <strong>Size:</strong>
-                    <select
-                      value={selectedSize}
-                      onChange={e => {
-                        setSelectedSize(e.target.value);
-                        setQuantity(1);
-                      }}
-                      style={{ marginLeft: 8 }}
-                    >
-                      {product.variations[selectedVariation].options[0].sizes.map(s => (
-                        <option key={s.size} value={s.size} disabled={s.quantity === 0}>
-                          {s.size} ({s.quantity} available)
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div style={{ marginBottom: '1rem' }}>
-                    <strong>Quantity:</strong>
-                    <input
-                      type="number"
-                      min={1}
-                      max={
-                        product.variations[selectedVariation].options[0].sizes.find(
-                          s => s.size === selectedSize
-                        )?.quantity || 1
-                      }
-                      value={quantity}
-                      onChange={e => {
-                        const maxQty =
-                          product.variations[selectedVariation].options[0].sizes.find(
-                            s => s.size === selectedSize
-                          )?.quantity || 1;
-                        let val = Number(e.target.value);
-                        if (val < 1) val = 1;
-                        if (val > maxQty) val = maxQty;
-                        setQuantity(val);
-                      }}
-                      style={{ marginLeft: 8, width: 60 }}
-                    />
-                  </div>
-                  <button
-                    style={{
-                      background: '#4b7c54',
-                      color: '#fff',
-                      border: 'none',
-                      borderRadius: 6,
-                      padding: '0.5rem 1.2rem',
-                      fontSize: '1rem',
-                      cursor: 'pointer',
-                      marginBottom: 12,
-                    }}
-                    onClick={() => {
-                      if (
-                        selections.some(
-                          sel =>
-                            sel.variationIdx === selectedVariation && sel.size === selectedSize
-                        )
-                      )
-                        return;
-                      const cartItem = cart.find(
-                        item =>
-                          item.product._id === product._id &&
-                          item.variationName ===
-                            (product.variations[selectedVariation]?.name ||
-                              product.variations[selectedVariation]?.variationName) &&
-                          item.size === selectedSize
-                      );
-                      const alreadyInCart = cartItem ? cartItem.quantity : 0;
-                      const maxQty =
-                        product.variations[selectedVariation].options[0].sizes.find(
-                          s => s.size === selectedSize
-                        )?.quantity || 1;
-                      if (alreadyInCart + quantity > maxQty) {
-                        alert('You cannot add more than the available stock for this variation/size.');
-                        return;
-                      }
-                      setSelections([
-                        ...selections,
-                        {
-                          variationIdx: selectedVariation,
-                          size: selectedSize,
-                          quantity,
-                        },
-                      ]);
-                    }}
-                    disabled={
-                      !selectedSize ||
-                      quantity < 1 ||
-                      quantity >
-                        (product.variations[selectedVariation].options[0].sizes.find(
-                          s => s.size === selectedSize
-                        )?.quantity || 1) ||
-                      selections.some(
-                        sel => sel.variationIdx === selectedVariation && sel.size === selectedSize
-                      )
-                    }
-                  >
-                    Add Selection
-                  </button>
-                </>
-              ) : (
-                <div style={{ marginBottom: '1rem', color: '#b00' }}>
-                  <strong>No sizes available for this variation.</strong>
-                </div>
-              )}
+              <div style={{ marginBottom: '1rem' }}>
+                <strong>Quantity:</strong>
+                <input
+                  type="number"
+                  min={1}
+                  max={
+                    product.sizeStock.find(s => s.size === selectedSize)?.quantity || 1
+                  }
+                  value={quantity}
+                  onChange={e => {
+                    const maxQty =
+                      product.sizeStock.find(s => s.size === selectedSize)?.quantity || 1;
+                    let val = Number(e.target.value);
+                    if (val < 1) val = 1;
+                    if (val > maxQty) val = maxQty;
+                    setQuantity(val);
+                  }}
+                  style={{ marginLeft: 8, width: 60 }}
+                />
+              </div>
+              <button
+                style={{
+                  background: '#4b7c54',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: 6,
+                  padding: '0.5rem 1.2rem',
+                  fontSize: '1rem',
+                  cursor: 'pointer',
+                  marginBottom: 12,
+                }}
+                onClick={() => {
+                  if (
+                    selections.some(
+                      sel => sel.size === selectedSize
+                    )
+                  )
+                    return;
+                  const cartItem = cart.find(
+                    item =>
+                      item.product._id === product._id &&
+                      item.size === selectedSize
+                  );
+                  const alreadyInCart = cartItem ? cartItem.quantity : 0;
+                  const maxQty =
+                    product.sizeStock.find(s => s.size === selectedSize)?.quantity || 1;
+                  if (alreadyInCart + quantity > maxQty) {
+                    alert('You cannot add more than the available stock for this size.');
+                    return;
+                  }
+                  setSelections([
+                    ...selections,
+                    {
+                      size: selectedSize,
+                      quantity,
+                    },
+                  ]);
+                }}
+                disabled={
+                  !selectedSize ||
+                  quantity < 1 ||
+                  quantity > (product.sizeStock.find(s => s.size === selectedSize)?.quantity || 1) ||
+                  selections.some(sel => sel.size === selectedSize)
+                }
+              >
+                Add Selection
+              </button>
             </>
           ) : null}
           {/* For products without variations: show quantity input and add to cart */}
@@ -293,11 +252,10 @@ function ProductDetail() {
           )}
           {selections.length > 0 && (
             <div style={{ margin: '1.5rem 0' }}>
-              <h4>Selected Variations & Sizes</h4>
+              <h4>Selected Sizes</h4>
               <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: 12 }}>
                 <thead>
                   <tr style={{ background: '#f0f0f0' }}>
-                    <th style={{ padding: 6, border: '1px solid #ccc' }}>Variation</th>
                     <th style={{ padding: 6, border: '1px solid #ccc' }}>Size</th>
                     <th style={{ padding: 6, border: '1px solid #ccc' }}>Quantity</th>
                     <th style={{ padding: 6, border: '1px solid #ccc' }}>Remove</th>
@@ -306,11 +264,6 @@ function ProductDetail() {
                 <tbody>
                   {selections.map((sel, idx) => (
                     <tr key={idx}>
-                      <td style={{ padding: 6, border: '1px solid #ccc' }}>
-                        {product.variations[sel.variationIdx]?.name ||
-                          product.variations[sel.variationIdx]?.variationName ||
-                          `Variation ${sel.variationIdx + 1}`}
-                      </td>
                       <td style={{ padding: 6, border: '1px solid #ccc' }}>{sel.size}</td>
                       <td style={{ padding: 6, border: '1px solid #ccc' }}>{sel.quantity}</td>
                       <td style={{ padding: 6, border: '1px solid #ccc' }}>
@@ -347,22 +300,13 @@ function ProductDetail() {
                     const cartItem = cart.find(
                       item =>
                         item.product._id === product._id &&
-                        item.variationName ===
-                          (product.variations[sel.variationIdx]?.name ||
-                            product.variations[sel.variationIdx]?.variationName) &&
                         item.size === sel.size
                     );
                     const alreadyInCart = cartItem ? cartItem.quantity : 0;
-                    const maxQty =
-                      product.variations[sel.variationIdx].options[0].sizes.find(
-                        s => s.size === sel.size
-                      )?.quantity || 1;
+                    const maxQty = product.sizeStock.find(s => s.size === sel.size)?.quantity || 1;
                     if (alreadyInCart + sel.quantity > maxQty) {
                       alert(
-                        `You cannot add more than the available stock for ${
-                          product.variations[sel.variationIdx]?.name ||
-                          product.variations[sel.variationIdx]?.variationName
-                        } - ${sel.size}.`
+                        `You cannot add more than the available stock for size: ${sel.size}.`
                       );
                       return;
                     }
@@ -371,9 +315,7 @@ function ProductDetail() {
                     addToCart(
                       product,
                       sel.quantity,
-                      sel.size,
-                      product.variations[sel.variationIdx]?.name ||
-                        product.variations[sel.variationIdx]?.variationName
+                      sel.size
                     );
                   });
                   setSelections([]);
@@ -397,7 +339,7 @@ function ProductDetail() {
           <button
             onClick={() => {
               setReviewsLoading(true);
-              API.get(`/reviews/product/${id}`).then(res => setReviews(Array.isArray(res.data) ? res.data : [])).finally(() => setReviewsLoading(false));
+              API.get(`/reviews/product/${id}`).then(res => setReviews(Array.isArray(res.data.reviews) ? res.data.reviews : [])).finally(() => setReviewsLoading(false));
             }}
             style={{ background: '#4b7c54', color: '#fff', border: 'none', borderRadius: 6, padding: '0.3rem 1rem', cursor: 'pointer', fontSize: '1rem' }}
             disabled={reviewsLoading}

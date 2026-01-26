@@ -24,14 +24,18 @@
   padding: 8px;
 }
 
+
+
 .messaging-message-row {
   margin-bottom: 10px;
   display: flex;
   align-items: flex-end;
+  justify-content: flex-start;
+  width: 100%;
 }
 
 .messaging-message-row.mine {
-  flex-direction: row-reverse;
+  justify-content: flex-end !important;
 }
 
 .messaging-message {
@@ -43,15 +47,19 @@
 }
 
 .messaging-message.mine {
-  background: #d1e7ff;
-  color: #0b3d91;
+  background: #538e5e !important;
+  color: #fff !important;
   box-shadow: 1px 1px 6px #b3d1f7;
+  align-self: flex-end !important;
+  margin-left: 40%;
 }
 
 .messaging-message.other {
-  background: #e6ffe6;
-  color: #256029;
+  background: #f1f1f1 !important;
+  color: #222 !important;
   box-shadow: 1px 1px 6px #b7e6c7;
+  align-self: flex-start !important;
+  margin-right: 40%;
 }
 
 .messaging-timestamp {

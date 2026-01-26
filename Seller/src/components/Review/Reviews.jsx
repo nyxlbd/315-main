@@ -59,7 +59,7 @@ const Reviews = () => {
     if (!replyText.trim()) return;
 
     try {
-      await sellerAPI.replyToReview(reviewId, { reply: replyText });
+      await sellerAPI.replyToReview(reviewId, { comment: replyText });
       setReplyingTo(null);
       setReplyText('');
       fetchReviews();
@@ -239,13 +239,13 @@ const Reviews = () => {
                 </div>
               )}
 
-              {review.sellerReply ? (
+              {review.sellerReply && review.sellerReply.comment ? (
                 <div className="review-reply">
                   <div className="review-reply-header">
                     <MessageSquare className="w-4 h-4" />
                     Seller Response
                   </div>
-                  <p className="review-reply-content">{review.sellerReply}</p>
+                  <p className="review-reply-content">{review.sellerReply.comment}</p>
                 </div>
               ) : replyingTo === review._id ? (
                 <div className="review-reply-form">

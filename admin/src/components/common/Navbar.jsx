@@ -11,7 +11,7 @@ const Navbar = () => {
   return (
     <header className="navbar">
       <div className="navbar-left">
-        <h1 className="navbar-title">Artisan Market Admin</h1>
+        <h1 className="navbar-title">Pine City Made Admin</h1>
       </div>
 
       <div className="navbar-right">

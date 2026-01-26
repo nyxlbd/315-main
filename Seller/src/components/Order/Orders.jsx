@@ -240,7 +240,7 @@ const Orders = () => {
                 </div>
 
                 <div className="order-actions">
-                  {order.status === 'placed' && (
+                  {order.status === 'order placed' && (
                     <button
                       onClick={() => handleStatusUpdate(order._id, 'processing')}
                       className="btn-order btn-process"
@@ -252,15 +252,15 @@ const Orders = () => {
                   
                   {order.status === 'processing' && (
                     <button
-                      onClick={() => handleStatusUpdate(order._id, 'shipped')}
+                      onClick={() => handleStatusUpdate(order._id, 'out for delivery')}
                       className="btn-order btn-ship"
                     >
                       <Truck className="w-4 h-4" />
-                      Mark as Shipped
+                      Mark as Out for Delivery
                     </button>
                   )}
                   
-                  {order.status === 'shipped' && (
+                  {order.status === 'out for delivery' && (
                     <button
                       onClick={() => handleStatusUpdate(order._id, 'delivered')}
                       className="btn-order btn-complete"
@@ -270,7 +270,7 @@ const Orders = () => {
                     </button>
                   )}
                   
-                  {(order.status === 'placed' || order.status === 'processing') && (
+                  {(order.status === 'order placed' || order.status === 'processing') && (
                     <button
                       onClick={() => handleStatusUpdate(order._id, 'cancelled')}
                       className="btn-order btn-cancel"

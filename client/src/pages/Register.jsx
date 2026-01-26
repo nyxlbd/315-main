@@ -2,11 +2,11 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import API from '../services/api';
+import { authAPI } from '../services/api';
 import './Register.css';
 
 function Register() {
-  const [form, setForm] = useState({ name: '', email: '', password: '', role: 'client' });
+  const [form, setForm] = useState({ username: '', email: '', password: '', role: 'customer' });
   const [message, setMessage] = useState('');
 
   const handleChange = (e) => {
@@ -17,9 +17,11 @@ function Register() {
     e.preventDefault();
     setMessage('');
     try {
-      await API.post('/auth/register', form);
+      const payload = { ...form, role: form.role.toLowerCase() };
+      await authAPI.register(payload);
       setMessage('Registration successful! You can now log in.');
     } catch (err) {
+      console.error('Registration error:', err.response || err);
       setMessage(err.response?.data?.message || 'Registration failed');
     }
   };
@@ -29,8 +31,8 @@ function Register() {
       <h2>Register</h2>
       <form onSubmit={handleSubmit} className="register-form">
         <div className="register-form-group">
-          <label>Name</label>
-          <input type="text" name="name" value={form.name} onChange={handleChange} required className="register-form-input" />
+          <label>Username</label>
+          <input type="text" name="username" value={form.username} onChange={handleChange} required className="register-form-input" />
         </div>
         <div className="register-form-group">
           <label>Email</label>
@@ -43,7 +45,7 @@ function Register() {
         <div className="register-form-group">
           <label>Role</label>
           <select name="role" value={form.role} onChange={handleChange} className="register-form-input">
-            <option value="client">Client</option>
+            <option value="customer">Client</option>
             <option value="seller">Seller</option>
           </select>
         </div>

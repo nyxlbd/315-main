@@ -17,11 +17,14 @@ function ClientMessages() {
       try {
         const [ordersRes, messagesRes] = await Promise.all([
           API.get('/orders/my'),
-          API.get('/messages/inbox'),
+          API.get('/messages/conversations'),
         ]);
+        console.log('DEBUG /orders/my:', ordersRes.data);
+        console.log('DEBUG /messages/conversations:', JSON.stringify(messagesRes.data, null, 2));
         setOrders(Array.isArray(ordersRes.data) ? ordersRes.data : []);
-        setMessages(Array.isArray(messagesRes.data) ? messagesRes.data : []);
-      } catch {
+        setMessages(Array.isArray(messagesRes.data?.conversations) ? messagesRes.data.conversations : []);
+      } catch (err) {
+        console.error('DEBUG fetchData error:', err);
         setOrders([]);
         setMessages([]);
       }
@@ -41,13 +44,14 @@ function ClientMessages() {
     }
   }
   // From messages
-  for (const msg of (Array.isArray(messages) ? messages : [])) {
-    if (msg.sender && msg.sender._id && msg.sender.role === 'seller' && !sellerMap[msg.sender._id]) {
-      sellers.push({ sellerId: msg.sender._id, sellerName: msg.sender.name || 'Unknown Seller' });
+  for (const conv of (Array.isArray(messages) ? messages : [])) {
+    const msg = conv.lastMessage;
+    if (msg && msg.sender && msg.sender._id && msg.sender.role === 'seller' && !sellerMap[msg.sender._id]) {
+      sellers.push({ sellerId: msg.sender._id, sellerName: msg.sender.shopName || msg.sender.username || 'Unknown Seller' });
       sellerMap[msg.sender._id] = true;
     }
-    if (msg.receiver && msg.receiver._id && msg.receiver.role === 'seller' && !sellerMap[msg.receiver._id]) {
-      sellers.push({ sellerId: msg.receiver._id, sellerName: msg.receiver.name || 'Unknown Seller' });
+    if (msg && msg.receiver && msg.receiver._id && msg.receiver.role === 'seller' && !sellerMap[msg.receiver._id]) {
+      sellers.push({ sellerId: msg.receiver._id, sellerName: msg.receiver.shopName || msg.receiver.username || 'Unknown Seller' });
       sellerMap[msg.receiver._id] = true;
     }
   }

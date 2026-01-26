@@ -60,11 +60,11 @@ function Messaging({ receiverId, orderId, receiverName }) {
     setSending(true);
     setError('');
     try {
-      const payload = { receiver: receiverId, content };
-      if (orderId) payload.order = orderId;
-      await API.post('/messages', payload);
+      const payload = { receiverId, message: content };
+      if (orderId) payload.orderId = orderId;
+      await API.post('/messages/send', payload);
       setContent('');
-      fetchMessages();
+      await fetchMessages();
     } catch {
       setError('Failed to send message.');
     }
@@ -81,7 +81,6 @@ function Messaging({ receiverId, orderId, receiverName }) {
           <div>No messages yet.</div>
         ) : (
           messages.map(msg => {
-            // Handle both populated and unpopulated sender fields
             let senderId = msg.sender;
             if (msg.sender && typeof msg.sender === 'object') {
               senderId = msg.sender._id || msg.sender;
@@ -90,11 +89,38 @@ function Messaging({ receiverId, orderId, receiverName }) {
             return (
               <div
                 key={msg._id}
-                className={`messaging-message-row${isMine ? ' mine' : ''}`}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: isMine ? 'flex-end' : 'flex-start',
+                  marginBottom: 10,
+                }}
               >
-                <span className={`messaging-message${isMine ? ' mine' : ' other'}`}>
-                  {msg.content}
-                  <div className="messaging-timestamp" style={{ textAlign: isMine ? 'right' : 'left' }}>
+                <span
+                  style={{
+                    background: isMine ? '#538e5e' : '#f1f1f1',
+                    color: isMine ? '#fff' : '#222',
+                    borderRadius: 12,
+                    padding: '8px 16px',
+                    maxWidth: '70%',
+                    wordBreak: 'break-word',
+                    alignSelf: isMine ? 'flex-end' : 'flex-start',
+                    marginLeft: isMine ? '40%' : 0,
+                    marginRight: !isMine ? '40%' : 0,
+                    boxShadow: isMine
+                      ? '1px 1px 6px #b3d1f7'
+                      : '1px 1px 6px #b7e6c7',
+                  }}
+                >
+                  {msg.message}
+                  <div
+                    style={{
+                      fontSize: '0.75em',
+                      color: '#888',
+                      marginTop: 4,
+                      textAlign: isMine ? 'right' : 'left',
+                    }}
+                  >
                     {new Date(msg.createdAt).toLocaleTimeString()}
                   </div>
                 </span>
