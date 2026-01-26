@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import API from '../api';
+import API from '../services/api';
 import { getCurrentUser, getUserRole } from '../auth';
 import './Messaging.css';
 

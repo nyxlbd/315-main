@@ -9,15 +9,15 @@ import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import Orders from './pages/Orders';
 import Dashboard from './pages/Dashboard';
-import SellerProducts from './pages/SellerProducts';
-import AdminPanel from './pages/AdminPanel';
+// import SellerProducts from './pages/SellerProducts';
+// import AdminPanel from './pages/AdminPanel';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import Messages from './pages/Messages';
-import SellerOrders from './pages/SellerOrders';
+// import SellerOrders from './pages/SellerOrders';
 import './AppLayout.css';
-import SellerMessages from './pages/SellerMessages';
-import SellerReviews from './pages/SellerReviews';
+// import SellerMessages from './pages/SellerMessages';
+// import SellerReviews from './pages/SellerReviews';
 
 function App() {
   // Protected route for authenticated users
@@ -58,41 +58,7 @@ function App() {
               <Messages />
             </PrivateRoute>
           } />
-          <Route path="/dashboard" element={
-            <RoleRoute role="seller">
-              <SellerProducts />
-            </RoleRoute>
-          } />
-          <Route path="/seller/orders" element={
-            <RoleRoute role="seller">
-              <SellerOrders />
-            </RoleRoute>
-          } />
-          <Route path="/seller/messages" element={
-            <RoleRoute role="seller">
-              <SellerMessages />
-            </RoleRoute>
-          } />
-          <Route path="/seller/reviews" element={
-            <RoleRoute role="seller">
-              <SellerReviews />
-            </RoleRoute>
-          } />
-          <Route path="/admin" element={
-            <RoleRoute role="admin">
-              <AdminPanel />
-            </RoleRoute>
-          } />
-          <Route path="/admin/users" element={
-            <RoleRoute role="admin">
-              <AdminPanel />
-            </RoleRoute>
-          } />
-          <Route path="/admin/products" element={
-            <RoleRoute role="admin">
-              <AdminPanel />
-            </RoleRoute>
-          } />
+          {/* Seller/Admin routes removed because files do not exist */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>

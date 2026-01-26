@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useCart } from '../CartContext';
 import { useParams, useNavigate } from 'react-router-dom';
-import API from '../api';
+import API from '../services/api';
 import { getCurrentUser, getUserRole } from '../auth';
 import ReviewReplyForm from '../components/ReviewReplyForm';
 import './ProductDetail.css';

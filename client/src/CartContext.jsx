@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import API from './api';
+import API from './services/api';
 import { isAuthenticated, getCurrentUser } from './auth';
 
 const CartContext = createContext();

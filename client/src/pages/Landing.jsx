@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../CartContext';
 import { isAuthenticated } from '../auth';
-import API from '../api';
+import API from '../services/api';
 import CategorySelector from '../components/CategorySelector';
 import ProductCard from '../components/ProductCard';
 

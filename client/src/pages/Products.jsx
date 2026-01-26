@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CategorySelector from '../components/CategorySelector';
 import ProductCard from '../components/ProductCard';
-import API from '../api';
+import API from '../services/api';
 import './Products.css';
 
 function Products() {
